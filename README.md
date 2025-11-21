@@ -39,3 +39,19 @@ class extExample(
             self.par.Foo.val = 23
 ```
 
+## Ensure
+Ensure existence of components without having to manualy create them (or even see them. )
+### Ensure Tox
+Ensure the existence of the given TOX-COMP using a global op shortcut.
+```python
+from touchutilcollection.ensure import ensure_global_tox
+from TauCeti import Tweener
+TweenerComp = ensure_global_tox( Tweener.ToxFile, "TAUCETI_TWEENER" )
+```
+### Ensure TDP
+Takes values from a TDP and applies the same Logic.
+```python
+from touchutilcollection.ensure import ensure_global_tox
+from TauCeti import Tweener
+TweenerComp = ensure_global_tox( Tweener )
+```

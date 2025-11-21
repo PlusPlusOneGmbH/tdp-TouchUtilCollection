@@ -1,6 +1,13 @@
 from datetime import datetime
 
 class TimeTracker:
+    """
+        A contextmanager the allows for testing timings in python scripts.
+        ```python
+        with TimeTracker() as tracker:
+            doSomething()
+            debug( tracker.meassurement )
+    """
     def __init__(self, print_on_exit = False, print_method = print):
         self.print_on_exit = print_on_exit
         self.start = datetime.now()

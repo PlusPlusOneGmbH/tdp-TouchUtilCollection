@@ -15,5 +15,7 @@ logger = logging.getLogger()
 log_level = getattr(logging, environ.get("TOUCHLAUNCH_LOGLEVEL", "INFO"), None) or logging.INFO
 logging.basicConfig(level=log_level)
 
+_ToxFiles = {}
+
 if float(app.build) < float(__minimum_td_version__):
     logger.warning(f"{__minimum_td_version__} required, found {app.build}")

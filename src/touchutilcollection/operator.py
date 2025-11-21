@@ -12,7 +12,13 @@ def refresh_tox(target_operator:COMP):
 
 
 
-def ensure_tox(filepath, op_shortcut, root_comp = root, default_path = "utils", reloadcustom = False, reloadbuiltin = False):
+def ensure_tox(filepath, 
+               op_shortcut, 
+            	root_comp = root, 
+                default_path = "utils", 
+                reloadcustom = False, 
+                reloadbuiltin = False):
+      
 	if (_potentialy:= getattr(op, op_shortcut, None)) is not None:
 		return _potentialy
 

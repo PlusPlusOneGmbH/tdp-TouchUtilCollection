@@ -107,6 +107,46 @@ def parfield(field_type:Type[partypes.ParStrMenu], page:str = "Custom",**kwargs:
 def parfield(field_type:Type[partypes.ParOP], page:str = "Custom",**kwargs:Unpack[ partypes.ParOP._args]) -> partypes.ParOP: 
     pass
 
+@overload
+def parfield(field_type:Type[partypes.ParObject], page:str = "Custom",**kwargs:Unpack[ partypes.ParObject._args]) -> partypes.ParObject: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParSOP], page:str = "Custom",**kwargs:Unpack[ partypes.ParSOP._args]) -> partypes.ParSOP: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParPOP], page:str = "Custom",**kwargs:Unpack[ partypes.ParPOP._args]) -> partypes.ParPOP: 
+    """2025 or higher. Add vesioncheck""""
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParMAT], page:str = "Custom",**kwargs:Unpack[ partypes.ParMAT._args]) -> partypes.ParMAT: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParCHOP], page:str = "Custom",**kwargs:Unpack[ partypes.ParCHOP._args]) -> partypes.ParCHOP: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParTOP], page:str = "Custom",**kwargs:Unpack[ partypes.ParTOP._args]) -> partypes.ParTOP: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParDAT], page:str = "Custom",**kwargs:Unpack[ partypes.ParDAT._args]) -> partypes.ParDAT: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParPanelCOMP], page:str = "Custom",**kwargs:Unpack[ partypes.ParPanelCOMP._args]) -> partypes.ParPanelCOMP: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParFile], page:str = "Custom",**kwargs:Unpack[ partypes.ParFile._args]) -> partypes.ParFile: 
+    pass
+
+@overload
+def parfield(field_type:Type[partypes.ParFolder], page:str = "Custom",**kwargs:Unpack[ partypes.ParFolder._args]) -> partypes.ParFolder: 
+    pass
 ## Actual Implementation.
 
 from sys import _getframe
@@ -132,6 +172,8 @@ class EnsureExtension():
 
 __all__ = [ "EnsureExtension", "parfield", "partypes" ]
 
+
+
 demo = None
 if demo:
 
@@ -139,7 +181,7 @@ if demo:
         class par:
             Foo = parfield(partypes.ParFloat)
             Bar = parfield(partypes.ParFloat, page ="Different", min = 0, max = 10)
-            Baba = parfield( partypes.ParMenu, menuLabels=["Eins", "Zwei", "Drei" ],bindExpr="Hello World")
+            Baba = parfield( partypes.ParMenu, menuLabels=["Eins", "Zwei", "Drei" ], menuNames=["1", "2", "3"], bindExpr="Hello World" )
 
         def __init__(self, ownerComp) -> None:
             super().__init__(ownerComp)

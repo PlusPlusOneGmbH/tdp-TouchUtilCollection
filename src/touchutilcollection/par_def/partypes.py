@@ -104,6 +104,7 @@ class _NumericPar(_Par[ParValueT]):
 
 class _MenuParArgs( TypedDict ):
 		menuLabels : NotRequired[List[str]]
+		menuNames : NotRequired[List[str]]
 		menuSource : NotRequired[str]
 		
 
@@ -160,16 +161,57 @@ class ParCOMP(_Par["None | COMP"]):
 	"TD COMP Parameter"
 	style:str = "COMP"
 
-
 class ParOP(_Par["None | OP"]):
 	"TD OP Parameter"
 	style:str = "OP"
 
+class ParObject(_Par["None | ObjectCOMP"]):
+	"TD Object Parameter"
+	style:str = "Object"
+
+class ParSOP(_Par["None | SOP"]):
+	"TD SOP Parameter"
+	style:str = "SOP"
+
+class ParPOP(_Par["None | POP"]):
+	"TD POP Parameter"
+	style:str = "POP"
+
+class ParMAT(_Par["None | MAT"]):
+	"TD MAT Parameter"
+	style:str = "MAT"
+
+class ParCHOP(_Par["None | CHOP"]):
+	"TD CHOP Parameter"
+	style:str = "CHOP"
+
+class ParTOP(_Par["None | TOP"]):
+	"TD TOP Parameter"
+	style:str = "TOP" 
+
+class ParDAT(_Par["None | DAT"]):
+	"TD DAT Parameter"
+	style:str = "DAT"
+
+class ParPanelCOMP(_Par["None | PanelCOMP"]):
+	"TD PanelCOMP Parameter"
+	style:str = "PanelCOMP"
+
+class ParFile(_Par["str"]):
+	"TD File Parameter"
+	style = "File"
+
+class ParFolder(_Par["str"]):
+	"TD Folder Parameter"
+	style = "Folder"
 
 # Not yet implemented.
 """
 class ParPython(_Par["Any"]):
 	"TD Python Parameter"
+
+# These ones are pargrops and can not be represented in the default value.	
+
 
 class ParRGB(_NumericPar["float"]):
 	"TD RGB Parameter"
@@ -195,44 +237,12 @@ class ParXYZ(_NumericPar["float"]):
 class ParXYZW(_NumericPar["float"]):
 	"TD XYZW Parameter"
 
-class ParObject(_Par["None | ObjectCOMP"]):
-	"TD Object Parameter"
+# These ones are special and honsetyl not worth the headache :)
 
-class ParSOP(_Par["None | SOP"]):
-	"TD SOP Parameter"
-
-class ParPOP(_Par["None | POP"]):
-	"TD POP Parameter"
-
-class ParMAT(_Par["None | MAT"]):
-	"TD MAT Parameter"
-
-class ParCHOP(_Par["None | CHOP"]):
-	"TD CHOP Parameter"
-
-class ParTOP(_Par["None | TOP"]):
-	"TD TOP Parameter"
-
-class ParDAT(_Par["None | DAT"]):
-	"TD DAT Parameter"
-
-class ParPanelCOMP(_Par["None | PanelCOMP"]):
-	"TD PanelCOMP Parameter"
-
-class ParCOMP(_Par["None | COMP"]):
-	"TD COMP Parameter"
-
-class ParOP(_Par["None | OP"]):
-	"TD OP Parameter"
-
-class ParFile(_Par["str"]):
-	"TD File Parameter"
 
 class ParFileSave(_Par["str"]):
 	"TD FileSave Parameter"
 
-class ParFolder(_Par["str"]):
-	"TD Folder Parameter"
 
 class ParHeader(_Par["str"]):
 	"TD Header Parameter"

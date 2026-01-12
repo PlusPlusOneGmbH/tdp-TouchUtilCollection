@@ -40,6 +40,31 @@ class _ParProxy():
 
         return target_par
     
+@dataclass
+class _ParGroupProxy():
+    data : dict
+    par_type : Type[partypes._Par]
+
+    def __call__(self, ownerComp) -> Any:
+        target_par = ensure_parameter(
+            ownerComp, 
+            self.data["name"], 
+            self.data["page"], 
+            f"append{self.par_type.style}", 
+            self.par_type.style
+        )  
+
+        for attrname, attrvalue in self.data.items():
+            if attrname in ("name", "page"): continue
+            setattr( target_par, attrname, attrvalue )
+
+        #One can dram. Pleas derivative senpai.
+        #_dependency_object = tdu.Dependency( target_par.eval() )
+        #_dependency_object.bindMaster = target_par
+        #_dependency_object.callbacks.append( self.data.get("callback", lambda *args: None) )
+
+        return target_par
+
 
 def ensure_page(ownerComp, pagename):
     for page in ownerComp.pages:
@@ -108,6 +133,10 @@ def parfield(field_type:Type[partypes.ParOP], page:str = "Custom",**kwargs:Unpac
     pass
 
 @overload
+def parfield(field_type:Type[partypes.ParCOMP], page:str = "Custom",**kwargs:Unpack[ partypes.ParCOMP._args]) -> partypes.ParCOMP: 
+    pass
+
+@overload
 def parfield(field_type:Type[partypes.ParObject], page:str = "Custom",**kwargs:Unpack[ partypes.ParObject._args]) -> partypes.ParObject: 
     pass
 
@@ -117,7 +146,7 @@ def parfield(field_type:Type[partypes.ParSOP], page:str = "Custom",**kwargs:Unpa
 
 @overload
 def parfield(field_type:Type[partypes.ParPOP], page:str = "Custom",**kwargs:Unpack[ partypes.ParPOP._args]) -> partypes.ParPOP: 
-    """2025 or higher. Add vesioncheck""""
+    """2025 or higher. Add vesioncheck"""
     pass
 
 @overload
@@ -158,8 +187,22 @@ def parfield(field_type:Type[T], page:str = "Custom", **kwargs) -> T:
     }
     return cast( T, _ParProxy(pass_args, field_type) )  # pyright: ignore[reportArgumentType]
 
+from typing import Literal
+
+def pargroupfield( field_type:Type[T], size:Literal[2,3,4], page:str = "Custom", **kwargs) -> T:
+    raise NotImplementedError()
+    pass_args = {
+        "page" : page,
+        "size" : size,
+        **_pop_default_kwarsg( kwargs )
+    }
+    return cast( T, _ParGroupProxy(pass_args, field_type) )  # pyright: ignore[reportArgumentType]
+
+
 class EnsureExtension():
     par:ClassVar
+    #parGroup:ClassVar
+
     def __init__(self, ownerComp) -> None:
         self.par = self.par() # pyright: ignore[reportAttributeAccessIssue]
         for attr_name in dir(self.par):

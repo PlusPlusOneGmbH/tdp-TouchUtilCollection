@@ -5,6 +5,9 @@ from dataclasses import dataclass
 
 
 from .par_def import partypes
+from .par_def import pargrouptypes
+
+
 
 ## Utils Start
 lookupdict = {}
@@ -46,7 +49,7 @@ class _ParGroupProxy():
     par_type : Type[partypes._Par]
 
     def __call__(self, ownerComp) -> Any:
-        target_par = ensure_parameter(
+        target_par = ensure_pargroup(
             ownerComp, 
             self.data["name"], 
             self.data["page"], 
@@ -57,12 +60,6 @@ class _ParGroupProxy():
         for attrname, attrvalue in self.data.items():
             if attrname in ("name", "page"): continue
             setattr( target_par, attrname, attrvalue )
-
-        #One can dram. Pleas derivative senpai.
-        #_dependency_object = tdu.Dependency( target_par.eval() )
-        #_dependency_object.bindMaster = target_par
-        #_dependency_object.callbacks.append( self.data.get("callback", lambda *args: None) )
-
         return target_par
 
 
@@ -87,10 +84,22 @@ def ensure_parameter(ownerComp, par_name:str, pagename:str, adder_method_name:st
     resulting_par.page = page
     return resulting_par
 
+def ensure_pargroup(ownerComp, par_name:str, pagename:str, adder_method_name:str, par_style:str):
+    if not is_legal_name( par_name ): raise Exception("Illegal CustomPar Name.")
+    page = ensure_page( ownerComp, pagename )
+    if (parGroup := ownerComp.parGroup[par_name]) is not None:
+        # lets validate the partype itself.
+        if parGroup.style != par_style: parGroup.destroy()
+
+    if ownerComp.parGroup[par_name] is None:
+        # now lets check if the par already exists, if not    
+        getattr(page, adder_method_name)( par_name )
+    resulting_pargroup = ownerComp.parGroup[par_name]
+    resulting_pargroup.page = page
+    return resulting_pargroup
+
 
 ## Utils End
-
-
 
 from typing import Unpack
 
@@ -176,6 +185,33 @@ def parfield(field_type:Type[partypes.ParFile], page:str = "Custom",**kwargs:Unp
 @overload
 def parfield(field_type:Type[partypes.ParFolder], page:str = "Custom",**kwargs:Unpack[ partypes.ParFolder._args]) -> partypes.ParFolder: 
     pass
+
+# parGroups
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupFloat], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupFloat._args]) -> pargrouptypes.ParGroupFloat: 
+    pass
+
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupInt], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupInt._args]) -> pargrouptypes.ParGroupInt: 
+    pass
+
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupRGBA], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupRGBA._args]) -> pargrouptypes.ParGroupRGBA: 
+    pass
+
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupUVW], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupUVW._args]) -> pargrouptypes.ParGroupUVW: 
+    pass
+
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupWH], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupWH._args]) -> pargrouptypes.ParGroupWH: 
+    pass
+
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupXYZW], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupXYZW._args]) -> pargrouptypes.ParGroupXYZW: 
+    pass
+
+
 ## Actual Implementation.
 
 from sys import _getframe
@@ -189,19 +225,19 @@ def parfield(field_type:Type[T], page:str = "Custom", **kwargs) -> T:
 
 from typing import Literal
 
-def pargroupfield( field_type:Type[T], size:Literal[2,3,4], page:str = "Custom", **kwargs) -> T:
-    raise NotImplementedError()
+def pargroupfield( field_type:Type[T], page:str = "Custom", **kwargs) -> T:
     pass_args = {
         "page" : page,
-        "size" : size,
+        "size" : kwargs.get("size", 2),
         **_pop_default_kwarsg( kwargs )
     }
     return cast( T, _ParGroupProxy(pass_args, field_type) )  # pyright: ignore[reportArgumentType]
 
 
+
 class EnsureExtension():
     par:ClassVar
-    #parGroup:ClassVar
+    parGroup:ClassVar
 
     def __init__(self, ownerComp) -> None:
         self.par = self.par() # pyright: ignore[reportAttributeAccessIssue]
@@ -211,6 +247,16 @@ class EnsureExtension():
             # Set name HERE!
             attr_object.data["name"] = attr_name
             setattr( self.par, attr_name, attr_object(ownerComp) )
+            
+
+        self.parGroup = self.parGroup() # pyright: ignore[reportAttributeAccessIssue]
+
+        for attr_name in dir(self.parGroup):
+            attr_object = getattr( self.parGroup, attr_name )
+            if not isinstance( attr_object, _ParGroupProxy): continue
+            # Set name HERE!
+            attr_object.data["name"] = attr_name
+            setattr( self.parGroup, attr_name, attr_object(ownerComp) )
 
 
 __all__ = [ "EnsureExtension", "parfield", "partypes" ]
@@ -226,6 +272,10 @@ if demo:
             Bar = parfield(partypes.ParFloat, page ="Different", min = 0, max = 10)
             Baba = parfield( partypes.ParMenu, menuLabels=["Eins", "Zwei", "Drei" ], menuNames=["1", "2", "3"], bindExpr="Hello World" )
 
+        class parGroup:
+            Hello = pargroupfield( pargrouptypes.ParGroupRGBA, size = 3 )
+            Group = pargroupfield( pargrouptypes.ParGroupRGBA, size = 2)
+
         def __init__(self, ownerComp) -> None:
             super().__init__(ownerComp)
             self.par.Foo.val = 23
@@ -233,3 +283,4 @@ if demo:
     something = extExample(None)
     something.par.Baba.default = 123 # pyright: ignore[reportAttributeAccessIssue] # Errors
     something.par.Baba.default = "123" # Works!
+    something.parGroup.Group.eval()[0]

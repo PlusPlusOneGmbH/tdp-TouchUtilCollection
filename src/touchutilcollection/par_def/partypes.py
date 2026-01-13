@@ -71,11 +71,13 @@ class _Par(_T.Generic[ParValueT]):
 	@abstractmethod
 	def destroy(self):
 		pass
+	
 	@abstractmethod
-	def reset() -> bool:
+	def reset(self) -> bool:
 		pass
+
 	@abstractmethod
-	def isPar( par:Any ) -> bool:
+	def isPar( self, par:Any ) -> bool:
 		pass
 
 class _NumericParArgs( TypedDict, _T.Generic[ParValueT] ):	

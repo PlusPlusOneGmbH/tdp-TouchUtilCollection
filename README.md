@@ -21,6 +21,9 @@ Powerfull with TauCetiTweener and the .Resolve() functionality.
 ## Extension
 Makes your live with extensions easier by allowing for autocreation of custompars.
 ```python
+
+from touchutilcollection.extensions import EnsureExtension, partypes, parfield, pargrouptypes, pargroupfield
+
 class extExample( 
     EnsureExtension # Required
      ):
@@ -34,9 +37,14 @@ class extExample(
             bindExpr="op.Settings.par.Baba" 
         )
 
-        def __init__(self, ownerComp) -> None:
-            super().__init__(ownerComp) # Also required
-            self.par.Foo.val = 23
+    class parGroup:
+        Somergb = pargroupfield( pargrouptypes.ParGroupRGBA, size = 3, default = (2,2,2) )
+
+    def __init__(self, ownerComp) -> None:
+        super().__init__(ownerComp) # Also required
+        self.par.Foo.val = 23
+        self.parGroup.Somergb[0].val = 2 # access pars using index
+        self.parGroup.default = (1,2,3) # same members as pars, but as touples. size needs to be considered!
 ```
 
 ## Ensure

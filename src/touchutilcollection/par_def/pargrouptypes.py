@@ -95,7 +95,7 @@ class _NumericParGroup(_ParGroup[ParValueT, ParTypeT]):
 		pass
 
 
-from partypes import ParFloat, ParInt
+from .partypes import ParFloat, ParInt
 
 class ParGroupFloat(_NumericParGroup["float", ParFloat]):
 	class _args(_NumericParGroupArgs[float], _ParGroupArgs[float]):

@@ -234,13 +234,15 @@ def pargroupfield( field_type:Type[T], page:str = "Custom", **kwargs) -> T:
     return cast( T, _ParGroupProxy(pass_args, field_type) )  # pyright: ignore[reportArgumentType]
 
 
+class _empty():
+    pass
 
 class EnsureExtension():
     par:ClassVar
     parGroup:ClassVar
 
     def __init__(self, ownerComp) -> None:
-        self.par = self.par() # pyright: ignore[reportAttributeAccessIssue]
+        self.par = getattr( self, "par", _empty)() # pyright: ignore[reportAttributeAccessIssue]
         for attr_name in dir(self.par):
             attr_object = getattr( self.par, attr_name )
             if not isinstance( attr_object, _ParProxy): continue
@@ -249,7 +251,7 @@ class EnsureExtension():
             setattr( self.par, attr_name, attr_object(ownerComp) )
             
 
-        self.parGroup = self.parGroup() # pyright: ignore[reportAttributeAccessIssue]
+        self.parGroup = getattr( self, "parGroup", _empty)() # pyright: ignore[reportAttributeAccessIssue]
 
         for attr_name in dir(self.parGroup):
             attr_object = getattr( self.parGroup, attr_name )

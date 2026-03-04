@@ -5,7 +5,7 @@ from pathlib import Path
 def ensure_global_tox(
 		filepath, 
 		op_shortcut, 
-		root_comp = root, 
+		root_comp:COMP = root, 
 		default_path = "utils", 
 		reloadcustom = False, 
 		reloadbuiltin = False):
@@ -30,7 +30,7 @@ def ensure_global_tox(
 	
 from typing import TypeVar, Type, cast
 T = TypeVar("T")
-def ensure_global_tdp( tdp_module, default_path = "utils", root_comp = "root", cast_as:Type[T] = COMP ):
+def ensure_global_tdp( tdp_module, default_path = "utils", root_comp:COMP = root, cast_as:Type[T] = COMP ):
 	return  cast(T,
 		ensure_global_tox(
 				 tdp_module.ToxFile,

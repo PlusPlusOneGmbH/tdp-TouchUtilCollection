@@ -1,4 +1,4 @@
-from td import baseCOMP, OP , COMP # pyright: ignore[reportMissingImports]
+from td import baseCOMP, OP , COMP, root, op # pyright: ignore[reportMissingImports]
 
 from pathlib import Path
 from typing import TypeVar

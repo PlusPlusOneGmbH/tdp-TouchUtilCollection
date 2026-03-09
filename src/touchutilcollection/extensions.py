@@ -243,6 +243,7 @@ class EnsureExtension():
 
     def __init__(self, ownerComp) -> None:
         self.par = getattr( self, "par", _empty)() # pyright: ignore[reportAttributeAccessIssue]
+        
         for attr_name in dir(self.par):
             attr_object = getattr( self.par, attr_name )
             if not isinstance( attr_object, _ParProxy): continue
@@ -271,7 +272,7 @@ if demo:
     class extExample( EnsureExtension ):
         class par:
             Foo = parfield(partypes.ParFloat)
-            Bar = parfield(partypes.ParFloat, page ="Different", min = 0, max = 10)
+            Bar = parfield(partypes.ParFloat, page ="Different", min = 0, max = 10, order = 3.0)
             Baba = parfield( partypes.ParMenu, menuLabels=["Eins", "Zwei", "Drei" ], menuNames=["1", "2", "3"], bindExpr="Hello World" )
 
         class parGroup:

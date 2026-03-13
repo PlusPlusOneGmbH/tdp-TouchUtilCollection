@@ -11,6 +11,7 @@ from .par_def import pargrouptypes
 
 ## Utils Start
 lookupdict = {}
+_par_metadata_dict = {}
 
 
 def _pop_default_kwarsg( target_dict:dict ):
@@ -71,6 +72,9 @@ def ensure_page(ownerComp, pagename):
 from .parameter import is_legal_name
 
 def ensure_parameter(ownerComp, par_name:str, pagename:str, adder_method_name:str, par_style:str):
+
+    is_new = False
+
     if not is_legal_name( par_name ): raise Exception("Illegal CustomPar Name.")
     page = ensure_page( ownerComp, pagename )
     if (par := ownerComp.par[par_name]) is not None:
@@ -80,12 +84,18 @@ def ensure_parameter(ownerComp, par_name:str, pagename:str, adder_method_name:st
     if ownerComp.par[par_name] is None:
         # now lets check if the par already exists, if not    
         getattr(page, adder_method_name)( par_name )
+        is_new = True
     resulting_par = ownerComp.par[par_name] # This noteably only works with single value parameters!
     resulting_par.page = page
+
+    _par_metadata_dict.setdefault( resulting_par , {})["is_new"] = is_new
+
     return resulting_par
 
 def ensure_pargroup(ownerComp, par_name:str, pagename:str, adder_method_name:str, par_style:str):
+    is_new = False
     if not is_legal_name( par_name ): raise Exception("Illegal CustomPar Name.")
+    
     page = ensure_page( ownerComp, pagename )
     if (parGroup := ownerComp.parGroup[par_name]) is not None:
         # lets validate the partype itself.
@@ -94,8 +104,10 @@ def ensure_pargroup(ownerComp, par_name:str, pagename:str, adder_method_name:str
     if ownerComp.parGroup[par_name] is None:
         # now lets check if the par already exists, if not    
         getattr(page, adder_method_name)( par_name )
+        is_new = True
     resulting_pargroup = ownerComp.parGroup[par_name]
     resulting_pargroup.page = page
+    _par_metadata_dict.setdefault( resulting_pargroup , {})["is_new"] = is_new
     return resulting_pargroup
 
 
@@ -249,8 +261,11 @@ class EnsureExtension():
             if not isinstance( attr_object, _ParProxy): continue
             # Set name HERE!
             attr_object.data["name"] = attr_name
-            setattr( self.par, attr_name, attr_object(ownerComp) )
-            
+            par_object = attr_object(ownerComp)
+            setattr( self.par, attr_name,  par_object )
+            if _par_metadata_dict[par_object].get("is_new", False):
+                par_object.reset()
+
 
         self.parGroup = getattr( self, "parGroup", _empty)() # pyright: ignore[reportAttributeAccessIssue]
 
@@ -259,8 +274,11 @@ class EnsureExtension():
             if not isinstance( attr_object, _ParGroupProxy): continue
             # Set name HERE!
             attr_object.data["name"] = attr_name
-            setattr( self.parGroup, attr_name, attr_object(ownerComp) )
-
+            pargroup_objct = attr_object(ownerComp)
+            setattr( self.parGroup, attr_name, pargroup_objct )
+            if _par_metadata_dict[pargroup_objct].get("is_new", False):
+                pargroup_objct.reset()
+        _par_metadata_dict.clear()
 
 __all__ = [ "EnsureExtension", "parfield", "partypes" ]
 

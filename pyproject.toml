@@ -1,6 +1,6 @@
 [project]
 name = "tdp-touchutilcollection"
-version = "0.7.2"
+version = "0.7.3"
 description = "A collection of practical utilities for TouchDesigner."
 readme = "README.md"
 authors = [
@@ -12,8 +12,7 @@ dependencies = []
 
 [project.urls]
 Website = "https://plusplus.one"
-Repository = "https://github.com/PlusPlusOneGmbH/Py_TouchUtilCollection"
-
+Repository = "https://github.com/PlusPlusOneGmbH/tdp-TouchUtilCollection"
 
 
 [build-system]

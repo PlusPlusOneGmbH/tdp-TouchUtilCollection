@@ -223,6 +223,14 @@ def pargroupfield(field_type:Type[pargrouptypes.ParGroupWH], page:str = "Custom"
 def pargroupfield(field_type:Type[pargrouptypes.ParGroupXYZW], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupXYZW._args]) -> pargrouptypes.ParGroupXYZW: 
     pass
 
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupMenu], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupMenu._args]) -> pargrouptypes.ParGroupMenu: 
+    pass
+
+@overload
+def pargroupfield(field_type:Type[pargrouptypes.ParGroupStrMenu], page:str = "Custom",**kwargs:Unpack[ pargrouptypes.ParGroupStrMenu._args]) -> pargrouptypes.ParGroupStrMenu: 
+    pass
+
 
 ## Actual Implementation.
 
@@ -296,6 +304,8 @@ if demo:
         class parGroup:
             Hello = pargroupfield( pargrouptypes.ParGroupRGBA, size = 3 )
             Group = pargroupfield( pargrouptypes.ParGroupRGBA, size = 2)
+            Float = pargroupfield( pargrouptypes.ParGroupFloat, size = 3, min = (0,0), max = (1,1))
+            Menu = pargroupfield( pargrouptypes.ParGroupMenu, size = 2, menuNames = (["Foo"], ["Bar"]), menuSource=("Foo","Bar"))
 
         def __init__(self, ownerComp) -> None:
             super().__init__(ownerComp)

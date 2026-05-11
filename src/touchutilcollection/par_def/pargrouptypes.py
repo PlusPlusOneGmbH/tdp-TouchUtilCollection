@@ -5,7 +5,8 @@ import typing as _T
 ParValueT 	= _T.TypeVar('ParValueT')
 ParTypeT 	= _T.TypeVar("ParTypeT")
 
-from typing import NotRequired, TypedDict, Tuple, Any, Literal
+from typing import NotRequired, TypedDict, Tuple, Any, Literal, List
+
 from abc import abstractmethod, abstractproperty
 ###
 class _ParGroupArgs( TypedDict, _T.Generic[ParValueT] ):
@@ -95,6 +96,20 @@ class _NumericParGroup(_ParGroup[ParValueT, ParTypeT]):
 		pass
 
 
+class _MenuParGroupArgs( TypedDict, _T.Generic[ParValueT] ):	
+		menuNames : NotRequired[Tuple[List[ParValueT],...]]
+		menuLabels : NotRequired[Tuple[List[ParValueT],...]]
+		menuSource : NotRequired[Tuple[str,...]]		
+
+class _MenuParGroup(_ParGroup[ParValueT, ParTypeT]):
+	class _args(_MenuParGroupArgs[ParValueT], _ParGroupArgs[ParValueT]): # pyright: ignore[reportGeneralTypeIssues]
+		pass
+	menuNames : Tuple[ParValueT,...]
+	menuLabels : Tuple[ParValueT,...]
+	menuSource : Tuple[str,...]
+
+
+
 from .partypes import ParFloat, ParInt
 
 class ParGroupFloat(_NumericParGroup["float", ParFloat]):
@@ -103,27 +118,43 @@ class ParGroupFloat(_NumericParGroup["float", ParFloat]):
 	"TD Float Parameter"
 	style:str = "Float"
 
+class ParGroupMenu(_MenuParGroup["str", ParFloat]):
+	class _args(_MenuParGroupArgs[str], _ParGroupArgs[str]):
+		size : Literal[2,3,4]
+	"TD Menu Parameter"
+	style:str = "Menu"
+
+class ParGroupStrMenu(_MenuParGroup["str", ParFloat]):
+	class _args(_MenuParGroupArgs[str], _ParGroupArgs[str]):
+		size : Literal[2,3,4]
+	"TD Menu Parameter"
+	style:str = "Menu"
+
 class ParGroupInt(_NumericParGroup["int", ParInt]):
 	class _args(_NumericParGroupArgs[int], _ParGroupArgs[int]):
 		size : Literal[2,3,4]
+
 	"TD Int Parameter"
 	style:str = "Int"
 	
 class ParGroupRGBA(_NumericParGroup["float", ParFloat]):
 	class _args(_NumericParGroupArgs[float], _ParGroupArgs[float]):
 		size : Literal[2,3,4]
+
 	"TD RGBA Parameter"
 	style:str = "RGBA"
 	
 class ParGroupXYZW(_NumericParGroup["float", ParFloat]):
 	class _args(_NumericParGroupArgs[float], _ParGroupArgs[float]):
 		size : Literal[2,3,4]
+
 	"TD XYZW Parameter"
 	style:str = "XYZW"
 	
 class ParGroupUVW(_NumericParGroup["float", ParFloat]):
 	class _args(_NumericParGroupArgs[float], _ParGroupArgs[float]):
 		size : Literal[2,3]
+
 	"TD XYZW Parameter"
 	style:str = "UVW"
 	

@@ -169,3 +169,5 @@ class ParGroupWH(_NumericParGroup["float", ParFloat]):
 		size : Literal[2]
 	"TD XYZW Parameter"
 	style:str = "WH"
+
+__all__ = ["ParGroupFloat", "ParGroupMenu", "ParGroupStrMenu", "ParGroupInt", "ParGroupRGBA", "ParGroupXYZW", "ParGroupUVW", "ParGroupWH"]
